@@ -1,0 +1,37 @@
+{
+    "Mon": {
+        "dishwasher": "TM",
+        "counter-top": "JC",
+        "stove-top": "AM"
+    },
+    "Tue": {
+        "dishwasher": "JC",
+        "counter-top": "AM",
+        "stove-top": "BJ"
+    }, 
+    "Wed": {
+        "dishwasher": "AM",
+        "counter-top": "BJ",
+        "stove-top": "BS"
+    }, 
+    "Thur": {
+        "dishwasher": "BJ",
+        "counter-top": "BS",
+        "stove-top": "SG"
+    }, 
+    "Fri": {
+        "dishwasher": "BS",
+        "counter-top": "SG",
+        "stove-top": "WD"
+    }, 
+    "Sat": {
+        "dishwasher": "SG",
+        "counter-top": "WD",
+        "stove-top": "DP"
+    }, 
+    "Sun": {
+        "dishwasher": "WD",
+        "counter-top": "DP",
+        "stove-top": "TM"
+    }
+}
