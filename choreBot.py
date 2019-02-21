@@ -10,6 +10,8 @@ todays_people = None
 request_params = {'token': '7bC53ZymUUULq74uIlnYHJ3WExGkGJMevOXGitY3'}
 response_messages = requests.get('https://api.groupme.com/v3/groups/48409659/messages', params = request_params).json()['response']['messages']
 
+print(response_messages)
+
 group = requests.get('https://api.groupme.com/v3/groups/48409659', params = request_params).json()['response']['members']
 
 daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
@@ -54,14 +56,14 @@ if (current_week != None):
     print(todays_people)
 
 
-to_send = 'Dishwasher, countertops, and stovetop, respectively.'
+to_send = '@Alec Maier  Hey'
 
 # TODO: correct this to use Loci. We will need to insert nicknames into the message text and use locis to map the mentions to them. 
 # refer to the mentions section of the docs for groupy https://media.readthedocs.org/pdf/groupy/stable/groupy.pdf
-mentions =[{"type": "mentions", "user_ids": [todays_people[0], todays_people[1], todays_people[2]]}]
+mentions = "{'loci': [[0,11]], 'type': 'mentions', 'user_ids': ['30437530']}"
 
 print(mentions)
 
-post_params = { 'bot_id' : '08a9497a271a70057028cd3b55', 'text': to_send, 'attachments': mentions }
+post_params = { 'bot_id' : '08a9497a271a70057028cd3b55', 'text': to_send, 'attachments': [mentions] }
 request = requests.post('https://api.groupme.com/v3/bots/post', params = post_params)
 print(request.content)
