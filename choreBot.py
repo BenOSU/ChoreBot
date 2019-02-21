@@ -9,8 +9,6 @@ response_messages = requests.get('https://api.groupme.com/v3/groups/48409659/mes
 
 group = requests.get('https://api.groupme.com/v3/groups/48409659', params = request_params).json()['response']['members']
 
-member_dict = {}
-
 daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
 chores = ['Dishwasher', 'Clean Countertops', 'Clean Stovetop']
 
@@ -47,21 +45,6 @@ if (current_week != None):
     shiftWeek()
     print(choreMapping)
 
-
-
-
-member_dict = {}
-
-
-for member in group:
-    member_dict[member['nickname']] = member['user_id']
-
-
-userIds = []
-
-#print(json.dumps(group, indent=4))
-
-# client = Client.from_token('7bC53ZymUUULq74uIlnYHJ3WExGkGJMevOXGitY3')
 
 to_send = '!!! Daily Whore Reminder !!! \n'
 
