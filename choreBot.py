@@ -3,6 +3,7 @@ import time
 import json
 import numpy
 import datetime
+import groupy
 from pprint import pprint
 
 todays_people = None
@@ -56,14 +57,14 @@ if (current_week != None):
     print(todays_people)
 
 
-to_send = '@Alec Maier  Hey'
+to_send = '@Ben Janesch Hey'
 
 # TODO: correct this to use Loci. We will need to insert nicknames into the message text and use locis to map the mentions to them. 
 # refer to the mentions section of the docs for groupy https://media.readthedocs.org/pdf/groupy/stable/groupy.pdf
-mentions = "{'loci': [[0,11]], 'type': 'mentions', 'user_ids': ['30437530']}"
+mentions = {'loci': [[0,12]], 'type': 'mentions', 'user_ids': ['30693108']}
 
 print(mentions)
 
-post_params = { 'bot_id' : '08a9497a271a70057028cd3b55', 'text': to_send, 'attachments': [mentions] }
+post_params = { "bot_id" : "08a9497a271a70057028cd3b55", "text": to_send, "attachments": [mentions] }
 request = requests.post('https://api.groupme.com/v3/bots/post', params = post_params)
 print(request.content)
