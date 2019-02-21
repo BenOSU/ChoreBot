@@ -14,7 +14,8 @@ member_dict = {}
 daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
 chores = ['Dishwasher', 'Clean Countertops', 'Clean Stovetop']
 
-member = {'AM': 30437530, 'BJ': 30693108, 'BS': 32706950, 'SG': 30107026, 'WD': 31580930, 'DP': 31628754, 'TM': 28709877, 'JC': 19049601}
+member_array = [30437530, 30693108, 32706950, 30107026, 31580930, 31628754, 28709877, 19049601]
+member_dict = {30437530: 'AM', 30693108: 'BJ', 32706950: 'BS', 30107026: 'SG', 31580930: 'WD', 31628754: 'DP', 28709877: 'TM', 19049601: 'JC'}
 
 current_week = None
 choreMapping = numpy.zeros((3,7), int)
@@ -26,13 +27,26 @@ def createWeekMapping():
         for j in range(len(whole_week[i])):
             choreMapping[i][j] = int(whole_week[i][j])
 
+def shiftWeek():
+    for i in range(choreMapping.shape[0]):
+        for j in range(choreMapping.shape[1]):
+            id = choreMapping[i][j]
+            mem_index = member_array.index(id)
+            if mem_index < 7:
+                choreMapping[i][j] = member_array[mem_index + 1]
+            else:
+                choreMapping[i][j] = member_array[0]
+
+
 
 current_week = open('current_week.txt')
 if (current_week != None):
     createWeekMapping()
     print(choreMapping)
+    print()
+    shiftWeek()
+    print(choreMapping)
 
-choreMapping = numpy.zeros((3,7), int)
 
 
 
