@@ -2,7 +2,10 @@ import requests
 import time
 import json
 import numpy
+import datetime
 from pprint import pprint
+
+todays_people = None
 
 request_params = {'token': '7bC53ZymUUULq74uIlnYHJ3WExGkGJMevOXGitY3'}
 response_messages = requests.get('https://api.groupme.com/v3/groups/48409659/messages', params = request_params).json()['response']['messages']
@@ -18,6 +21,7 @@ member_dict = {30437530: 'AM', 30693108: 'BJ', 32706950: 'BS', 30107026: 'SG', 3
 current_week = None
 choreMapping = numpy.zeros((3,7), int)
 
+# reads the current Week from the JSON file
 def createWeekMapping():
     whole_week = current_week.read().split("\n")
     for i in range(len(whole_week)):
@@ -25,6 +29,7 @@ def createWeekMapping():
         for j in range(len(whole_week[i])):
             choreMapping[i][j] = int(whole_week[i][j])
 
+# starts a new chore week by shifting everybody to the left
 def shiftWeek():
     for i in range(choreMapping.shape[0]):
         for j in range(choreMapping.shape[1]):
@@ -44,9 +49,19 @@ if (current_week != None):
     print()
     shiftWeek()
     print(choreMapping)
+    day_of_week = datetime.datetime.today().weekday() # get the current weekday
+    todays_people = choreMapping[:,day_of_week]
+    print(todays_people)
 
 
-to_send = '!!! Daily Whore Reminder !!! \n'
+to_send = 'Dishwasher, countertops, and stovetop, respectively.'
 
-post_params = { 'bot_id' : '08a9497a271a70057028cd3b55', 'text': to_send }
-#requests.post('https://api.groupme.com/v3/bots/post', params = post_params)
+# TODO: correct this to use Loci. We will need to insert nicknames into the message text and use locis to map the mentions to them. 
+# refer to the mentions section of the docs for groupy https://media.readthedocs.org/pdf/groupy/stable/groupy.pdf
+mentions =[{"type": "mentions", "user_ids": [todays_people[0], todays_people[1], todays_people[2]]}]
+
+print(mentions)
+
+post_params = { 'bot_id' : '08a9497a271a70057028cd3b55', 'text': to_send, 'attachments': mentions }
+request = requests.post('https://api.groupme.com/v3/bots/post', params = post_params)
+print(request.content)
