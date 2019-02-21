@@ -59,8 +59,6 @@ if (current_week != None):
 
 to_send = '@Ben Janesch Hey'
 
-# TODO: correct this to use Loci. We will need to insert nicknames into the message text and use locis to map the mentions to them. 
-# refer to the mentions section of the docs for groupy https://media.readthedocs.org/pdf/groupy/stable/groupy.pdf
 mentions = {'loci': [[0,12]], 'type': 'mentions', 'user_ids': ['30693108']}
 
 print(mentions)
