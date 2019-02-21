@@ -7,9 +7,18 @@ response_messages = requests.get('https://api.groupme.com/v3/groups/48409659/mes
 
 group = requests.get('https://api.groupme.com/v3/groups/48409659', params = request_params).json()['response']['members']
 
+member_dict = {}
+
+daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
+
+for member in group:
+    member_dict[member['nickname']] = member['user_id']
+
+print(member_dict)
+
 userIds = []
 
-print(json.dumps(group, indent=4))
+#print(json.dumps(group, indent=4))
 
 # client = Client.from_token('7bC53ZymUUULq74uIlnYHJ3WExGkGJMevOXGitY3')
 
