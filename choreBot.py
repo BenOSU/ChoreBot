@@ -1,13 +1,15 @@
 import requests
 import time
-from groupy import Client
+import json
 
 request_params = {'token': '7bC53ZymUUULq74uIlnYHJ3WExGkGJMevOXGitY3'}
 response_messages = requests.get('https://api.groupme.com/v3/groups/48409659/messages', params = request_params).json()['response']['messages']
 
-response_users = requests.get('https://api.groupme.com/v3/groups/48409659/users', params = request_params).json()['response']['users']
+group = requests.get('https://api.groupme.com/v3/groups/48409659', params = request_params).json()['response']['members']
 
-print(response_users)
+userIds = []
+
+print(json.dumps(group, indent=4))
 
 # client = Client.from_token('7bC53ZymUUULq74uIlnYHJ3WExGkGJMevOXGitY3')
 
