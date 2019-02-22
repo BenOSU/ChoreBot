@@ -7,25 +7,26 @@ import groupy
 from pprint import pprint
 
 
+### IMPORTANT VARIABLES AND CONSTANTS ###
 todays_people = None
-
-request_params = {'token': '7bC53ZymUUULq74uIlnYHJ3WExGkGJMevOXGitY3'}
-response_messages = requests.get('https://api.groupme.com/v3/groups/48409659/messages', params = request_params).json()['response']['messages']
-
-print(response_messages)
-
-group = requests.get('https://api.groupme.com/v3/groups/48409659', params = request_params).json()['response']['members']
-
-daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
-chores = ['Dishwasher', 'Clean Countertops', 'Clean Stovetop']
-
-member_array = [30437530, 30693108, 32706950, 30107026, 31580930, 31628754, 28709877, 19049601]
-member_dict = {30437530: 'AM', 30693108: 'BJ', 32706950: 'BS', 30107026: 'SG', 31580930: 'WD', 31628754: 'DP', 28709877: 'TM', 19049601: 'JC'}
-
 current_week = None
 choreMapping = numpy.zeros((3,7), int)
+member_array = [30437530, 30693108, 32706950, 30107026, 31580930, 31628754, 28709877, 19049601]
+member_dict = {30437530: '@Alec Maier', 30693108: '@Ben Janesch', 32706950: '@Benjamin Janish', 30107026: '@Stephen Gant', 31580930: '@Wenjing Deng', 31628754: '@Derek Potts', 28709877: '@Mhomas 👵', 19049601: '@Justin Clark'}
+request_params = {'token': '7bC53ZymUUULq74uIlnYHJ3WExGkGJMevOXGitY3'}
+intro_string = '!!! Daily Whore Reminder !!!'
+dishwasher_string = '\nDishwasher: '
+countertop_string = '\nClean Countertops: '
+stovetop_string = '\nClean Stovetop: '
 
-# reads the current Week from the JSON file
+#TODO: Get nicknames from this response and check if they are different than the ones stored in member_dict
+homies_group_info = requests.get('https://api.groupme.com/v3/groups/34883130', params = request_params).json()
+
+# request for bot test group
+#group = requests.get('https://api.groupme.com/v3/groups/48409659', params = request_params).json()
+
+
+# reads the current Week from the JSON file and maps it to the numpy array
 def createWeekMapping():
     whole_week = current_week.read().split("\n")
     for i in range(len(whole_week)):
@@ -33,6 +34,7 @@ def createWeekMapping():
         for j in range(len(whole_week[i])):
             choreMapping[i][j] = int(whole_week[i][j])
 
+# TODO: write new mapping to JSON file
 # starts a new chore week by shifting everybody to the left
 def shiftWeek():
     for i in range(choreMapping.shape[0]):
@@ -44,26 +46,43 @@ def shiftWeek():
             else:
                 choreMapping[i][j] = member_array[0]
 
+# accesses nicknames from todays people and returns the message for the bot to post. Chore strings are defined at the top of the file
+def constructChoreMessage(todays_people, member_dict):
+    return intro_string + dishwasher_string + member_dict.get(todays_people[0]) + countertop_string \
+     + member_dict.get(todays_people[1]) + stovetop_string + member_dict.get(todays_people[2])
 
+# calculates the correct loci based on the length of todays nicknames and the length of the chore strings
+def constructMentionsObject(todays_people):
+    mention_index1 = len(intro_string) + len(dishwasher_string)
+    mention_index2 = mention_index1 + len(member_dict.get(todays_people[0])) + len(countertop_string)
+    mention_index3 = mention_index2 + len(member_dict.get(todays_people[1])) + len(stovetop_string)
+    firstLoci = [mention_index1, len(member_dict.get(todays_people[0]))]
+    secondLoci = [mention_index2, len(member_dict.get(todays_people[1]))]
+    thirdLoci = [mention_index3, len(member_dict.get(todays_people[2]))]
+    return {'loci': [firstLoci, secondLoci, thirdLoci], 'type': 'mentions', 'user_ids': [str(todays_people[0]), \
+     str(todays_people[1]), str(todays_people[2])]}
 
+# open the current week information
 current_week = open('current_week.txt')
-if (current_week != None):
-    createWeekMapping()
-    print(choreMapping)
-    print()
-    shiftWeek()
-    print(choreMapping)
-    day_of_week = datetime.datetime.today().weekday() # get the current weekday
-    todays_people = choreMapping[:,day_of_week]
-    print(todays_people)
 
+# map it to the numpy array
+createWeekMapping()
 
-to_send = '@Ben Janesch Hey'
+# TODO: This call should only happen once per week
+#shiftWeek()
 
-mentions = {'loci': [[0,12]], 'type': 'mentions', 'user_ids': ['30693108']}
+# get the chore people for today
+day_of_week = datetime.datetime.today().weekday() # get the current weekday
+todays_people = choreMapping[:,day_of_week]
 
-print(mentions)
+# construct message
+chore_message = constructChoreMessage(todays_people, member_dict)
 
-post_params = { "bot_id" : "08a9497a271a70057028cd3b55", "text": to_send, "attachments": [mentions] }
+# get mentions attachment object for request
+mentions = constructMentionsObject(todays_people)
+
+# construct request
+post_params = { "bot_id" : "08a9497a271a70057028cd3b55", "text": chore_message, "attachments": [mentions] }
+
+# make the request
 request = requests.post('https://api.groupme.com/v3/bots/post', data=json.dumps(post_params))
-print(request)
