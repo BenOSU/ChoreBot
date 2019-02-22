@@ -3,8 +3,6 @@ import time
 import json
 import numpy
 import datetime
-import groupy
-from pprint import pprint
 
 ### IMPORTANT VARIABLES AND CONSTANTS ###
 group_id = '34883130'
