@@ -6,6 +6,7 @@ import datetime
 import groupy
 from pprint import pprint
 
+
 todays_people = None
 
 request_params = {'token': '7bC53ZymUUULq74uIlnYHJ3WExGkGJMevOXGitY3'}
@@ -64,5 +65,5 @@ mentions = {'loci': [[0,12]], 'type': 'mentions', 'user_ids': ['30693108']}
 print(mentions)
 
 post_params = { "bot_id" : "08a9497a271a70057028cd3b55", "text": to_send, "attachments": [mentions] }
-request = requests.post('https://api.groupme.com/v3/bots/post', params = post_params)
-print(request.content)
+request = requests.post('https://api.groupme.com/v3/bots/post', data=json.dumps(post_params))
+print(request)
