@@ -14,10 +14,11 @@ choreMapping = numpy.zeros((3,7), int)
 member_array = [30437530, 30693108, 32706950, 30107026, 31580930, 31628754, 28709877, 19049601]
 member_dict = {30437530: '@Alec Maier', 30693108: '@Ben Janesch', 32706950: '@Benjamin Janish', 30107026: '@Stephen Gant', 31580930: '@Wenjing Deng', 31628754: '@Derek Potts', 28709877: '@Mhomas 👵', 19049601: '@Justin Clark'}
 request_params = {'token': '7bC53ZymUUULq74uIlnYHJ3WExGkGJMevOXGitY3'}
-intro_string = '!!! Daily Whore Reminder !!!'
+intro_string = '!!! Daily Whore Reminder !!!\n'
 dishwasher_string = '\nDishwasher: '
 countertop_string = '\nClean Countertops: '
 stovetop_string = '\nClean Stovetop: '
+ending_string = '\n\nThis has been your daily whore reminder.'
 
 #TODO: Get nicknames from this response and check if they are different than the ones stored in member_dict
 homies_group_info = requests.get('https://api.groupme.com/v3/groups/34883130', params = request_params).json()
@@ -49,7 +50,7 @@ def shiftWeek():
 # accesses nicknames from todays people and returns the message for the bot to post. Chore strings are defined at the top of the file
 def constructChoreMessage(todays_people, member_dict):
     return intro_string + dishwasher_string + member_dict.get(todays_people[0]) + countertop_string \
-     + member_dict.get(todays_people[1]) + stovetop_string + member_dict.get(todays_people[2])
+     + member_dict.get(todays_people[1]) + stovetop_string + member_dict.get(todays_people[2]) + ending_string
 
 # calculates the correct loci based on the length of todays nicknames and the length of the chore strings
 def constructMentionsObject(todays_people):
