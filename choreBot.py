@@ -20,7 +20,7 @@ countertop_string = '\nClean Countertops: @'
 stovetop_string = '\nClean Stovetop: @'
 ending_string = '\n\nThis has been your daily whore reminder.'
 
-#TODO: Get nicknames from this response and check if they are different than the ones stored in member_dict
+
 request_url = 'https://api.groupme.com/v3/groups/' + group_id
 homies_group_info = requests.get(request_url, params = request_params).json()
 
@@ -42,9 +42,10 @@ def createWeekMapping():
         for j in range(len(whole_week[i])):
             choreMapping[i][j] = int(whole_week[i][j])
 
-# TODO: write new mapping to JSON file
 # starts a new chore week by shifting everybody to the left
 def shiftWeek():
+    current_week.seek(0)
+    current_week.truncate()
     for i in range(choreMapping.shape[0]):
         for j in range(choreMapping.shape[1]):
             id = choreMapping[i][j]
@@ -53,6 +54,8 @@ def shiftWeek():
                 choreMapping[i][j] = member_array[mem_index + 1]
             else:
                 choreMapping[i][j] = member_array[0]
+            current_week.write(str(choreMapping[i][j]) + ' ')
+        current_week.write('\n')
 
 # accesses nicknames from todays people and returns the message for the bot to post. Chore strings are defined at the top of the file
 def constructChoreMessage(todays_people, member_dict):
@@ -71,16 +74,21 @@ def constructMentionsObject(todays_people):
      str(todays_people[1]), str(todays_people[2])]}
 
 # open the current week information
-current_week = open('current_week.txt')
+current_week = open('current_week.txt', 'r+')
 
 # map it to the numpy array
 createWeekMapping()
 
-# TODO: This call should only happen once per week
-#shiftWeek()
+day_of_week = datetime.datetime.today().weekday() # get the current weekday
+
+# Shift week if it's Sunday
+if (day_of_week == 0):
+    shiftWeek()
+
+# close file stream
+current_week.close()
 
 # get the chore people for today
-day_of_week = datetime.datetime.today().weekday() # get the current weekday
 todays_people = choreMapping[:,day_of_week]
 
 # construct message
@@ -93,4 +101,4 @@ mentions = constructMentionsObject(todays_people)
 post_params = { "bot_id" : bot_id, "text": chore_message, "attachments": [mentions] }
 
 # make the request
-#request = requests.post('https://api.groupme.com/v3/bots/post', data=json.dumps(post_params))
+request = requests.post('https://api.groupme.com/v3/bots/post', data=json.dumps(post_params))
