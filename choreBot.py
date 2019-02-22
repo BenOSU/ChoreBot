@@ -6,27 +6,36 @@ import datetime
 import groupy
 from pprint import pprint
 
-
 ### IMPORTANT VARIABLES AND CONSTANTS ###
+group_id = '34883130'
+access_token = '7bC53ZymUUULq74uIlnYHJ3WExGkGJMevOXGitY3'
+bot_id = '08a9497a271a70057028cd3b55'
 todays_people = None
 current_week = None
 choreMapping = numpy.zeros((3,7), int)
 member_array = [30437530, 30693108, 32706950, 30107026, 31580930, 31628754, 28709877, 19049601]
-member_dict = {30437530: '@Alec Maier', 30693108: '@Ben Janesch', 32706950: '@Benjamin Janish', 30107026: '@Stephen Gant', 31580930: '@Wenjing Deng', 31628754: '@Derek Potts', 28709877: '@Mhomas 👵', 19049601: '@Justin Clark'}
-request_params = {'token': '7bC53ZymUUULq74uIlnYHJ3WExGkGJMevOXGitY3'}
+member_dict = {30437530: 'Alec Maier', 30693108: 'Ben Janesch', 32706950: 'Benjamin Janish', 30107026: 'Stephen Gant', 31580930: 'Wenjing Deng', 31628754: 'Derek Potts', 28709877: 'Mhomas 👵', 19049601: 'Justin Clark'}
+request_params = {'token': access_token}
 intro_string = '!!! Daily Whore Reminder !!!\n'
-dishwasher_string = '\nDishwasher: '
-countertop_string = '\nClean Countertops: '
-stovetop_string = '\nClean Stovetop: '
+dishwasher_string = '\nDishwasher: @'
+countertop_string = '\nClean Countertops: @'
+stovetop_string = '\nClean Stovetop: @'
 ending_string = '\n\nThis has been your daily whore reminder.'
 
 #TODO: Get nicknames from this response and check if they are different than the ones stored in member_dict
-homies_group_info = requests.get('https://api.groupme.com/v3/groups/34883130', params = request_params).json()
+request_url = 'https://api.groupme.com/v3/groups/' + group_id
+homies_group_info = requests.get(request_url, params = request_params).json()
 
-# request for bot test group
-#group = requests.get('https://api.groupme.com/v3/groups/48409659', params = request_params).json()
+# request for bot test group, remove once migrated
+group = requests.get('https://api.groupme.com/v3/groups/48409659', params = request_params).json()
 
-
+#change to homies_group_info
+response = int(group['meta']['code'])
+if(response < 400):
+    the_homies = group['response']['members']
+    for homie in the_homies:
+        member_dict[homie['user_id']] = homie['nickname']
+    
 # reads the current Week from the JSON file and maps it to the numpy array
 def createWeekMapping():
     whole_week = current_week.read().split("\n")
@@ -83,7 +92,7 @@ chore_message = constructChoreMessage(todays_people, member_dict)
 mentions = constructMentionsObject(todays_people)
 
 # construct request
-post_params = { "bot_id" : "08a9497a271a70057028cd3b55", "text": chore_message, "attachments": [mentions] }
+post_params = { "bot_id" : bot_id, "text": chore_message, "attachments": [mentions] }
 
 # make the request
-request = requests.post('https://api.groupme.com/v3/bots/post', data=json.dumps(post_params))
+#request = requests.post('https://api.groupme.com/v3/bots/post', data=json.dumps(post_params))
